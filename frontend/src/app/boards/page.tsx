@@ -19,9 +19,8 @@ import {
   Shield,
   Search,
   ArrowUpRight,
-  Clock,
+  Sparkles,
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
 
 export default function BoardsPage() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -128,8 +127,8 @@ export default function BoardsPage() {
     return (
       <div className="flex-1 flex items-center justify-center py-28">
         <div className="flex flex-col items-center space-y-3">
-          <Loader2 className="w-6 h-6 animate-spin text-slate-700" />
-          <p className="text-xs font-medium text-slate-500">Loading workspaces...</p>
+          <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+          <p className="text-xs font-semibold text-slate-500">Loading workspaces...</p>
         </div>
       </div>
     );
@@ -140,11 +139,11 @@ export default function BoardsPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-            Kanban Boards
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center space-x-2">
+            <span>Kanban Boards</span>
           </h1>
-          <p className="mt-0.5 text-xs text-slate-500">
-            Collaborative boards and task tracking for your teams
+          <p className="mt-0.5 text-xs text-slate-500 font-medium">
+            Manage your sprint boards, milestones, and cross-functional team workflows
           </p>
         </div>
 
@@ -157,13 +156,13 @@ export default function BoardsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Filter boards..."
-              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition"
+              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
             />
           </div>
 
           <button
             onClick={() => setIsCreateOpen(true)}
-            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs transition shrink-0"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-semibold shadow-sm shadow-indigo-500/25 transition-all active:scale-95 shrink-0"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>New Board</span>
@@ -172,12 +171,12 @@ export default function BoardsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center space-x-1 border-b border-slate-200 pb-2">
+      <div className="flex items-center space-x-1 border-b border-slate-200/80 pb-2">
         <button
           onClick={() => setActiveTab('all')}
-          className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
             activeTab === 'all'
-              ? 'bg-slate-900 text-white'
+              ? 'bg-indigo-600 text-white shadow-xs shadow-indigo-500/20'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
@@ -185,9 +184,9 @@ export default function BoardsPage() {
         </button>
         <button
           onClick={() => setActiveTab('owned')}
-          className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
             activeTab === 'owned'
-              ? 'bg-slate-900 text-white'
+              ? 'bg-indigo-600 text-white shadow-xs shadow-indigo-500/20'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
@@ -195,9 +194,9 @@ export default function BoardsPage() {
         </button>
         <button
           onClick={() => setActiveTab('shared')}
-          className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
             activeTab === 'shared'
-              ? 'bg-slate-900 text-white'
+              ? 'bg-indigo-600 text-white shadow-xs shadow-indigo-500/20'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
@@ -206,7 +205,7 @@ export default function BoardsPage() {
       </div>
 
       {error && (
-        <div className="flex items-center space-x-2 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+        <div className="flex items-center space-x-2 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -215,11 +214,11 @@ export default function BoardsPage() {
       {/* Board Cards Grid */}
       {filteredBoards.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 p-8 space-y-3">
-          <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center mx-auto">
-            <Kanban className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto shadow-xs">
+            <Kanban className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">
+            <h3 className="text-sm font-bold text-slate-900">
               {searchQuery
                 ? 'No matching boards found'
                 : activeTab === 'shared'
@@ -237,7 +236,7 @@ export default function BoardsPage() {
           {!searchQuery && activeTab !== 'shared' && (
             <button
               onClick={() => setIsCreateOpen(true)}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition"
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs font-semibold shadow-xs hover:from-indigo-500 hover:to-violet-500 transition-all active:scale-95"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create Board</span>
@@ -245,25 +244,37 @@ export default function BoardsPage() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredBoards.map((board) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredBoards.map((board, idx) => {
             const roleTag =
               board.currentUserRole === 'OWNER'
-                ? { label: 'Owner', style: 'bg-slate-100 text-slate-700 border-slate-200' }
+                ? { label: 'Owner', style: 'bg-indigo-50 text-indigo-700 border-indigo-200/80 shadow-2xs' }
                 : board.currentUserRole === 'EDITOR'
-                ? { label: 'Editor', style: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
-                : { label: 'Viewer', style: 'bg-sky-50 text-sky-700 border-sky-200' };
+                ? { label: 'Editor', style: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 shadow-2xs' }
+                : { label: 'Viewer', style: 'bg-sky-50 text-sky-700 border-sky-200/80 shadow-2xs' };
+
+            // Varied header gradient bar per card for visual richness
+            const gradientBars = [
+              'from-indigo-500 via-purple-500 to-pink-500',
+              'from-blue-500 via-indigo-500 to-cyan-500',
+              'from-teal-500 via-emerald-500 to-green-500',
+            ];
+            const barGradient = gradientBars[idx % gradientBars.length];
 
             return (
               <div
                 key={board.id}
-                className="group relative bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between overflow-hidden"
+                onClick={() => router.push(`/boards/${board.id}`)}
+                className="group relative bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-indigo-200 transition-all duration-200 flex flex-col justify-between overflow-hidden hover:-translate-y-1 cursor-pointer"
               >
+                {/* Colorful top bar */}
+                <div className={`h-1.5 w-full bg-gradient-to-r ${barGradient}`} />
+
                 <div className="p-5">
                   {/* Top tags */}
                   <div className="flex items-center justify-between mb-3">
                     <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${roleTag.style}`}
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold border ${roleTag.style}`}
                     >
                       <Shield className="w-3 h-3 mr-1" />
                       {roleTag.label}
@@ -277,7 +288,7 @@ export default function BoardsPage() {
                           setBoardToDelete(board);
                         }}
                         title="Delete Board"
-                        className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition"
+                        className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all active:scale-90"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -287,10 +298,10 @@ export default function BoardsPage() {
                   {/* Title & Description */}
                   <Link href={`/boards/${board.id}`} className="block">
                     <div className="flex items-start justify-between">
-                      <h3 className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600 transition line-clamp-1">
+                      <h3 className="text-[14px] font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
                         {board.title}
                       </h3>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-indigo-600 transition shrink-0 ml-1.5 opacity-0 group-hover:opacity-100" />
+                      <ArrowUpRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-600 transition-all shrink-0 ml-1.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </div>
                     <p className="mt-1.5 text-xs text-slate-500 line-clamp-2 min-h-[2rem] leading-relaxed">
                       {board.description || 'No description provided.'}
@@ -299,30 +310,30 @@ export default function BoardsPage() {
                 </div>
 
                 {/* Footer details */}
-                <div className="px-5 py-3 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                <div className="px-5 py-3.5 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                   <div className="flex items-center space-x-3.5">
                     <span className="flex items-center space-x-1" title="Tasks">
-                      <CheckSquare className="w-3 h-3 text-slate-400" />
-                      <span className="font-medium text-slate-700">
-                        {board.totalTasks ?? 0}
+                      <CheckSquare className="w-3.5 h-3.5 text-indigo-500" />
+                      <span className="font-semibold text-slate-700">
+                        {board.totalTasks ?? 0} tasks
                       </span>
                     </span>
                     <span className="flex items-center space-x-1" title="Columns">
-                      <Columns className="w-3 h-3 text-slate-400" />
-                      <span className="font-medium text-slate-700">
+                      <Columns className="w-3.5 h-3.5 text-slate-400" />
+                      <span className="font-semibold text-slate-700">
                         {board.columnsCount ?? 0}
                       </span>
                     </span>
                     <span className="flex items-center space-x-1" title="Collaborators">
-                      <Users className="w-3 h-3 text-slate-400" />
-                      <span className="font-medium text-slate-700">
+                      <Users className="w-3.5 h-3.5 text-slate-400" />
+                      <span className="font-semibold text-slate-700">
                         {board.membersCount ?? 0}
                       </span>
                     </span>
                   </div>
 
                   {!board.isOwner && board.owner && (
-                    <span className="text-slate-400 truncate max-w-[100px]" title={`Owned by ${board.owner.name}`}>
+                    <span className="text-slate-400 truncate max-w-[100px] text-[10.5px]" title={`Owned by ${board.owner.name}`}>
                       By {board.owner.name}
                     </span>
                   )}
@@ -336,7 +347,7 @@ export default function BoardsPage() {
       {/* Modal: Create Board */}
       {isCreateOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-5 animate-pop-in">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-base font-bold text-slate-900">Create New Board</h2>
@@ -369,7 +380,7 @@ export default function BoardsPage() {
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder="e.g. Q4 Sprint Planning, Mobile Redesign"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 text-xs"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs"
                 />
               </div>
 
@@ -382,7 +393,7 @@ export default function BoardsPage() {
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
                   placeholder="Goals, context, or deliverables..."
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 text-xs resize-none"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs resize-none"
                 />
               </div>
 
@@ -390,14 +401,14 @@ export default function BoardsPage() {
                 <button
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
-                  className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isCreating || !newTitle.trim()}
-                  className="inline-flex items-center space-x-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs disabled:opacity-50 transition"
+                  className="inline-flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-lg shadow-sm shadow-indigo-500/25 disabled:opacity-50 transition-all active:scale-95"
                 >
                   {isCreating ? (
                     <>
@@ -417,7 +428,7 @@ export default function BoardsPage() {
       {/* Modal: Delete Confirmation */}
       {boardToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl border border-slate-100 space-y-3">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl border border-slate-100 space-y-3 animate-pop-in">
             <h3 className="text-sm font-bold text-slate-900">Delete Board</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
               Are you sure you want to permanently delete{' '}
@@ -427,7 +438,7 @@ export default function BoardsPage() {
               <button
                 type="button"
                 onClick={() => setBoardToDelete(null)}
-                className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
+                className="px-3.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
               >
                 Cancel
               </button>
@@ -435,7 +446,7 @@ export default function BoardsPage() {
                 type="button"
                 onClick={handleDeleteBoard}
                 disabled={isDeleting}
-                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-lg shadow-xs disabled:opacity-50 transition"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-lg shadow-xs disabled:opacity-50 transition active:scale-95"
               >
                 {isDeleting ? (
                   <>

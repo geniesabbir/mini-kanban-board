@@ -19,9 +19,9 @@ import {
   AlertCircle,
   Search,
   Filter,
-  Info,
-  X,
   Lock,
+  X,
+  Sparkles,
 } from 'lucide-react';
 
 export default function BoardDetailPage() {
@@ -334,8 +334,8 @@ export default function BoardDetailPage() {
     return (
       <div className="flex-1 flex items-center justify-center py-28">
         <div className="flex flex-col items-center space-y-3">
-          <Loader2 className="w-6 h-6 animate-spin text-slate-700" />
-          <p className="text-xs font-medium text-slate-500">Loading board...</p>
+          <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+          <p className="text-xs font-semibold text-slate-500">Loading board...</p>
         </div>
       </div>
     );
@@ -343,9 +343,9 @@ export default function BoardDetailPage() {
 
   if (error || !board) {
     return (
-      <div className="flex-1 max-w-md mx-auto px-4 py-24 text-center space-y-3">
-        <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto">
-          <AlertCircle className="w-5 h-5" />
+      <div className="flex-1 max-w-md mx-auto px-4 py-24 text-center space-y-4">
+        <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto ring-8 ring-rose-50/50">
+          <AlertCircle className="w-6 h-6" />
         </div>
         <h2 className="text-base font-bold text-slate-900">Access Denied or Not Found</h2>
         <p className="text-xs text-slate-500 leading-relaxed">
@@ -353,7 +353,7 @@ export default function BoardDetailPage() {
         </p>
         <Link
           href="/boards"
-          className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition"
+          className="inline-flex items-center space-x-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Boards</span>
@@ -364,20 +364,20 @@ export default function BoardDetailPage() {
 
   const roleTag =
     board.currentUserRole === 'OWNER'
-      ? { label: 'Owner', style: 'bg-slate-100 text-slate-700 border-slate-200' }
+      ? { label: 'Owner', style: 'bg-indigo-50 text-indigo-700 border-indigo-200/80 shadow-2xs' }
       : board.currentUserRole === 'EDITOR'
-      ? { label: 'Editor', style: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
-      : { label: 'Viewer (Read-only)', style: 'bg-sky-50 text-sky-700 border-sky-200' };
+      ? { label: 'Editor', style: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 shadow-2xs' }
+      : { label: 'Viewer (Read-only)', style: 'bg-sky-50 text-sky-700 border-sky-200/80 shadow-2xs' };
 
   return (
     <div className="flex-1 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden">
       {/* Top Header Toolbar */}
-      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white border-b border-slate-200/80 px-4 sm:px-6 py-2.5 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
         {/* Left: Breadcrumb & Title */}
         <div className="flex items-center space-x-3 min-w-0">
           <Link
             href="/boards"
-            className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded transition"
+            className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all active:scale-95 cursor-pointer"
             title="All Boards"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -389,14 +389,14 @@ export default function BoardDetailPage() {
                 {board.title}
               </h1>
               <span
-                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10.5px] font-semibold border ${roleTag.style} shrink-0`}
+                className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10.5px] font-bold border ${roleTag.style} shrink-0`}
               >
                 <Shield className="w-3 h-3 mr-1" />
                 {roleTag.label}
               </span>
             </div>
             {board.description && (
-              <p className="text-[11px] text-slate-400 truncate max-w-lg">
+              <p className="text-[11px] text-slate-400 truncate max-w-lg mt-0.5">
                 {board.description}
               </p>
             )}
@@ -407,13 +407,13 @@ export default function BoardDetailPage() {
         <div className="flex items-center space-x-2 shrink-0">
           {/* Filter input */}
           <div className="relative">
-            <Search className="w-3 h-3 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={taskFilter}
               onChange={(e) => setTaskFilter(e.target.value)}
               placeholder="Filter tasks..."
-              className="w-36 sm:w-44 pl-7 pr-2 py-1 text-xs rounded-md border border-slate-200 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900"
+              className="w-36 sm:w-48 pl-7 pr-2.5 py-1.5 text-xs rounded-lg border border-slate-200 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
             />
           </div>
 
@@ -421,7 +421,7 @@ export default function BoardDetailPage() {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="text-xs border border-slate-200 rounded-md px-2 py-1 bg-white text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-900"
+            className="text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
           >
             <option value="ALL">All Priorities</option>
             <option value="URGENT">Urgent</option>
@@ -433,11 +433,11 @@ export default function BoardDetailPage() {
           {/* Members / Share button */}
           <button
             onClick={() => setIsShareOpen(true)}
-            className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs transition"
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-600 text-xs font-semibold text-slate-700 shadow-2xs transition-all active:scale-95 cursor-pointer"
           >
-            <Users className="w-3.5 h-3.5 text-slate-400" />
+            <Users className="w-3.5 h-3.5 text-indigo-500" />
             <span>Members</span>
-            <span className="ml-1 px-1 py-0.2 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold">
+            <span className="ml-1 px-1.5 py-0.2 rounded-full bg-indigo-100 text-indigo-700 text-[10px] font-bold">
               {1 + (board.members?.length || 0)}
             </span>
           </button>
@@ -446,19 +446,19 @@ export default function BoardDetailPage() {
 
       {/* Read-Only Notice for Viewers */}
       {!canEdit && (
-        <div className="bg-sky-50/70 border-b border-sky-100 px-4 py-1.5 text-xs text-sky-800 flex items-center justify-center space-x-1.5">
-          <Lock className="w-3.5 h-3.5 shrink-0" />
+        <div className="bg-sky-50 border-b border-sky-100 px-4 py-2 text-xs text-sky-800 flex items-center justify-center space-x-2 font-medium">
+          <Lock className="w-3.5 h-3.5 text-sky-600 shrink-0" />
           <span>
-            You have <strong>Viewer</strong> access to this board. Cards and workflows are read-only.
+            You have <strong>Viewer</strong> access to this board. Task movement and editing are in read-only mode.
           </span>
         </div>
       )}
 
       {/* Kanban Board Container */}
-      <div className="flex-1 p-4 sm:p-5 overflow-x-auto bg-slate-50/60">
+      <div className="flex-1 p-4 sm:p-6 overflow-x-auto bg-slate-50/70">
         {isMounted ? (
           <DragDropContext onDragEnd={handleDragEnd}>
-            <div className="inline-flex items-start space-x-3.5 h-full pb-4">
+            <div className="inline-flex items-start space-x-4 h-full pb-4">
               {displayedColumns.map((column) => (
                 <ColumnContainer
                   key={column.id}
@@ -476,25 +476,25 @@ export default function BoardDetailPage() {
 
               {/* Add Column Button / Form */}
               {canEdit && (
-                <div className="w-[300px] shrink-0">
+                <div className="w-[305px] shrink-0">
                   {isAddingColumn ? (
                     <form
                       onSubmit={handleAddColumn}
-                      className="bg-white rounded-xl border border-slate-300 p-3 shadow-2xs space-y-2.5"
+                      className="bg-white rounded-2xl border border-indigo-200 p-3.5 shadow-md space-y-3 animate-fade-in"
                     >
                       <input
                         type="text"
                         autoFocus
                         value={newColumnTitle}
                         onChange={(e) => setNewColumnTitle(e.target.value)}
-                        placeholder="Column title..."
-                        className="w-full px-2.5 py-1.5 text-xs rounded-md border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                        placeholder="e.g. QA & Testing"
+                        className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                       />
-                      <div className="flex items-center space-x-1.5">
+                      <div className="flex items-center space-x-2">
                         <button
                           type="submit"
                           disabled={isCreatingColumn || !newColumnTitle.trim()}
-                          className="px-3 py-1 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-md shadow-2xs disabled:opacity-50 transition"
+                          className="px-3.5 py-1.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-lg shadow-sm shadow-indigo-500/25 disabled:opacity-50 transition-all active:scale-95"
                         >
                           {isCreatingColumn ? 'Adding...' : 'Add Column'}
                         </button>
@@ -504,18 +504,18 @@ export default function BoardDetailPage() {
                             setIsAddingColumn(false);
                             setNewColumnTitle('');
                           }}
-                          className="p-1 text-slate-400 hover:text-slate-600 rounded"
+                          className="p-1.5 text-slate-400 hover:text-slate-600 rounded-md transition"
                         >
-                          <X className="w-3.5 h-3.5" />
+                          <X className="w-4 h-4" />
                         </button>
                       </div>
                     </form>
                   ) : (
                     <button
                       onClick={() => setIsAddingColumn(true)}
-                      className="w-full py-2.5 px-3 rounded-xl border border-dashed border-slate-300 hover:border-slate-400 hover:bg-white text-xs font-semibold text-slate-500 hover:text-slate-800 transition flex items-center justify-center space-x-1.5"
+                      className="w-full py-3 px-3.5 rounded-2xl border-2 border-dashed border-slate-300/90 hover:border-indigo-400 hover:bg-white/80 hover:text-indigo-600 text-xs font-semibold text-slate-500 transition-all duration-200 flex items-center justify-center space-x-2 shadow-2xs hover:shadow-xs group"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors" />
                       <span>Add Column</span>
                     </button>
                   )}
@@ -525,7 +525,7 @@ export default function BoardDetailPage() {
           </DragDropContext>
         ) : (
           <div className="flex items-center justify-center h-full">
-            <Loader2 className="w-5 h-5 animate-spin text-slate-600" />
+            <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
           </div>
         )}
       </div>
@@ -553,7 +553,7 @@ export default function BoardDetailPage() {
       {/* Delete Column Confirmation Modal */}
       {columnToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl border border-slate-100 space-y-3">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl border border-slate-100 space-y-3 animate-pop-in">
             <h3 className="text-sm font-bold text-slate-900">Delete Column</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
               Are you sure you want to delete &ldquo;
@@ -572,7 +572,7 @@ export default function BoardDetailPage() {
                 type="button"
                 onClick={handleDeleteColumn}
                 disabled={isDeletingColumn}
-                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-lg shadow-xs disabled:opacity-50 transition"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-lg shadow-xs disabled:opacity-50 transition active:scale-95"
               >
                 {isDeletingColumn ? (
                   <>

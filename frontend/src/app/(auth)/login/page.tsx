@@ -38,23 +38,23 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50/70 py-12 px-4 sm:px-6">
-      <div className="max-w-sm w-full space-y-6 bg-white p-8 rounded-2xl shadow-2xs border border-slate-200/80">
-        <div className="text-center space-y-2">
-          <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center mx-auto shadow-xs">
-            <Kanban className="w-5 h-5 text-slate-100" />
+      <div className="max-w-sm w-full space-y-6 bg-white p-8 rounded-3xl shadow-sm border border-slate-200/80 animate-pop-in">
+        <div className="text-center space-y-2.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-600 text-white flex items-center justify-center mx-auto shadow-md shadow-indigo-500/25">
+            <Kanban className="w-6 h-6 text-white" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-slate-900 tracking-tight">
               Sign in to KanbanFlow
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Enter your credentials to access your workspaces
+            <p className="text-xs text-slate-500 mt-0.5 font-medium">
+              Enter your credentials to access your collaborative boards
             </p>
           </div>
         </div>
 
         {error && (
-          <div className="flex items-center space-x-2 p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+          <div className="flex items-center space-x-2 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs animate-fade-in">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -71,7 +71,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.com"
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 text-xs bg-white"
+              className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs bg-white transition-all"
             />
           </div>
 
@@ -85,14 +85,14 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 text-xs bg-white"
+              className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs bg-white transition-all"
             />
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-2 px-3 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-50 transition flex items-center justify-center space-x-1.5 shadow-xs"
+            className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-50 transition-all flex items-center justify-center space-x-1.5 shadow-sm shadow-indigo-500/25 active:scale-98"
           >
             {isSubmitting ? (
               <>
@@ -108,11 +108,11 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Demo Fast Fill Section */}
+        {/* Demo Fast Fill Section with Color Badges */}
         <div className="pt-3 border-t border-slate-100">
-          <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium mb-2">
+          <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold mb-2">
             <span className="flex items-center space-x-1">
-              <KeyRound className="w-3 h-3 text-slate-400" />
+              <KeyRound className="w-3 h-3 text-indigo-500" />
               <span>Assessment Demo Accounts</span>
             </span>
           </div>
@@ -121,23 +121,23 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => handleQuickLogin('alice@example.com')}
-              className="px-2 py-1.5 rounded-md border border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-[11px] font-medium text-slate-700 transition text-center"
+              className="px-2 py-2 rounded-xl border border-indigo-100 bg-indigo-50/50 hover:bg-indigo-100 hover:border-indigo-300 text-[11px] font-bold text-indigo-900 transition-all text-center active:scale-95 shadow-2xs"
             >
-              Alice <span className="text-[10px] text-slate-400 block font-normal">Owner</span>
+              Alice <span className="text-[10px] text-indigo-500 block font-medium">Owner</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('bob@example.com')}
-              className="px-2 py-1.5 rounded-md border border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-[11px] font-medium text-slate-700 transition text-center"
+              className="px-2 py-2 rounded-xl border border-emerald-100 bg-emerald-50/50 hover:bg-emerald-100 hover:border-emerald-300 text-[11px] font-bold text-emerald-900 transition-all text-center active:scale-95 shadow-2xs"
             >
-              Bob <span className="text-[10px] text-slate-400 block font-normal">Editor</span>
+              Bob <span className="text-[10px] text-emerald-600 block font-medium">Editor</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('charlie@example.com')}
-              className="px-2 py-1.5 rounded-md border border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-[11px] font-medium text-slate-700 transition text-center"
+              className="px-2 py-2 rounded-xl border border-sky-100 bg-sky-50/50 hover:bg-sky-100 hover:border-sky-300 text-[11px] font-bold text-sky-900 transition-all text-center active:scale-95 shadow-2xs"
             >
-              Charlie <span className="text-[10px] text-slate-400 block font-normal">Viewer</span>
+              Charlie <span className="text-[10px] text-sky-600 block font-medium">Viewer</span>
             </button>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function LoginPage() {
             Don&apos;t have an account?{' '}
             <Link
               href="/register"
-              className="font-semibold text-slate-900 hover:underline"
+              className="font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
             >
               Sign up
             </Link>
