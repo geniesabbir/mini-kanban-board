@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# NestJS
+backend/dist/
+
+# Environment
+.env
+backend/.env
+frontend/.env.local
+frontend/.env*.local
+
+# System & IDE
+.DS_Store
+.vscode/
+.idea/
+*.log

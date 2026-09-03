@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kanban-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kanban_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d kanban_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kanban-backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/kanban_db?schema=public
+      JWT_SECRET: super-secret-kanban-jwt-token-key-change-in-prod
+      JWT_EXPIRES_IN: 7d
+      CORS_ORIGIN: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "npx prisma db push && npx ts-node prisma/seed.ts && node dist/main"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kanban-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+    driver: local
