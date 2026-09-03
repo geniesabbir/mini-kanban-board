@@ -4,6 +4,8 @@ A production-grade, collaborative **Mini Kanban Board** full-stack web applicati
 
 Built for the **Webbriks Full-Stack Engineer Technical Assessment**.
 
+> **Note on Development**: This project was developed with the assistance of **Google Gemini** as an AI pair-programmer and copilot for architectural design, full-stack engineering, and automated testing.
+
 ---
 
 ## Architecture & Tech Stack
@@ -254,3 +256,14 @@ All 15 automated test suites verify:
 ├── docker-compose.yml          # Local container orchestration
 └── README.md                   # Setup documentation
 ```
+
+---
+
+## Development & AI Tooling
+
+This project was built with the assistance of **Google Gemini** as an AI pair-programming assistant. Gemini was used across the engineering lifecycle for:
+- **System Architecture**: Designing the deterministic transactional task re-ordering mechanism and role-based access control guards.
+- **Full-Stack Implementation**: Implementing NestJS REST endpoints, Prisma relational models, and Next.js 15 App Router drag-and-drop components.
+- **Test Automation**: Generating Jest unit and integration test suites covering edge cases (such as cross-board move prevention and permission checks).
+- **Documentation & DevOps**: Crafting setup workflows, Docker Compose multi-stage configurations, and API references.
+
