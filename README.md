@@ -75,70 +75,89 @@ The database comes pre-seeded with sample users and collaborative boards:
 
 ---
 
-## Quick Start with Docker (Recommended)
+## Setup & Running the Application
 
-To spin up the PostgreSQL database, NestJS Backend, and Next.js Frontend with a single command:
+Choose **one** of the two methods below to run the application:
+
+### Option 1: Running with Docker (Recommended — Single Command)
+
+If you have Docker and Docker Compose installed, you can launch the entire stack (Database, Backend, and Frontend) with a single command — **no manual database installation or local dependency setup is required**:
 
 ```bash
 docker compose up --build
 ```
 
-- **Frontend**: Accessible at [http://localhost:3000](http://localhost:3000)
-- **Backend API**: Accessible at [http://localhost:4000](http://localhost:4000)
-- **PostgreSQL**: Running on port `5432`
+#### What this single command does automatically:
+1. Spins up the **PostgreSQL 16** container with persistent storage and waits until it passes health checks.
+2. Builds and starts the **NestJS Backend**, pushes database migrations (`prisma db push`), seeds demo users and collaborative boards (`prisma/seed.ts`), and exposes the API on `http://localhost:4000`.
+3. Builds and serves the **Next.js Frontend** on `http://localhost:3000`.
+
+#### Accessing the application:
+- **Frontend App**: [http://localhost:3000](http://localhost:3000)
+- **Backend API**: [http://localhost:4000](http://localhost:4000)
+- **PostgreSQL**: `localhost:5432`
+
+To stop all running containers:
+```bash
+docker compose down
+```
 
 ---
 
-## Manual Local Setup
+### Option 2: Running Without Docker (Local Node.js & PostgreSQL)
 
-### Prerequisites
-- Node.js >= 18 (Node 20 or 22 recommended)
-- PostgreSQL running locally (port 5432)
+If you do not have Docker installed or prefer running services directly on your host machine for development:
 
-### 1. Database Setup
-Create a PostgreSQL database named `kanban_db`:
+#### Prerequisites
+- **Node.js**: `>= 18.0.0` (Node 20 or 22 recommended)
+- **PostgreSQL**: Running locally on port `5432`
+
+#### Step 1: Create the Database
+Create a database named `kanban_db`:
 ```bash
+# Using CLI:
 createdb kanban_db
-# or via psql:
-# CREATE DATABASE kanban_db;
+
+# Or using psql:
+# psql -c "CREATE DATABASE kanban_db;"
 ```
 
-### 2. Backend Setup
+#### Step 2: Start Backend
+In a terminal window:
 ```bash
 cd backend
 
 # 1. Install dependencies
 npm install
 
-# 2. Configure environment variables (.env)
+# 2. Setup environment file
 cp .env.example .env
-# Verify your DATABASE_URL in .env:
-# DATABASE_URL="postgresql://<user>:<password>@localhost:5432/kanban_db?schema=public"
+# Note: Update DATABASE_URL in .env if your local postgres credentials differ from postgres:postgres@localhost:5432
 
-# 3. Synchronize database schema and run seed script
+# 3. Synchronize database schema & seed initial demo data
 npx prisma db push
 npx ts-node prisma/seed.ts
 
-# 4. Start backend development server
+# 4. Start NestJS server
 npm run start:dev
 ```
-Backend will be live at `http://localhost:4000`.
+Backend API will be running at [http://localhost:4000](http://localhost:4000).
 
-### 3. Frontend Setup
-In a new terminal:
+#### Step 3: Start Frontend
+In a separate terminal window:
 ```bash
 cd frontend
 
 # 1. Install dependencies
 npm install
 
-# 2. Configure environment variables (.env.local)
+# 2. Setup environment file
 cp .env.example .env.local
 
-# 3. Start frontend development server
+# 3. Start Next.js development server
 npm run dev
 ```
-Open `http://localhost:3000` in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
