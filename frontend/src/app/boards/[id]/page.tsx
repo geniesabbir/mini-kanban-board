@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
@@ -17,9 +17,11 @@ import {
   Shield,
   Loader2,
   AlertCircle,
-  Sparkles,
+  Search,
+  Filter,
   Info,
   X,
+  Lock,
 } from 'lucide-react';
 
 export default function BoardDetailPage() {
@@ -33,6 +35,10 @@ export default function BoardDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
+  // Search & Filters inside the board
+  const [taskFilter, setTaskFilter] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState<string>('ALL');
+
   // Modals state
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -42,7 +48,7 @@ export default function BoardDetailPage() {
   } | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  // New Column inline or modal state
+  // New Column state
   const [isAddingColumn, setIsAddingColumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState('');
   const [isCreatingColumn, setIsCreatingColumn] = useState(false);
@@ -110,10 +116,11 @@ export default function BoardDetailPage() {
     const destIndex = destination.index;
 
     // Build optimistic state
-    const newColumns = board.columns?.map((col) => ({
-      ...col,
-      tasks: [...col.tasks],
-    })) || [];
+    const newColumns =
+      board.columns?.map((col) => ({
+        ...col,
+        tasks: [...col.tasks],
+      })) || [];
 
     const sourceCol = newColumns.find((c) => c.id === sourceColId);
     const destCol = newColumns.find((c) => c.id === destColId);
@@ -160,6 +167,29 @@ export default function BoardDetailPage() {
       );
     }
   };
+
+  // Filtered columns for search/filter
+  const displayedColumns = useMemo(() => {
+    if (!board?.columns) return [];
+    if (!taskFilter.trim() && priorityFilter === 'ALL') {
+      return board.columns;
+    }
+
+    const q = taskFilter.toLowerCase().trim();
+
+    return board.columns.map((col) => ({
+      ...col,
+      tasks: col.tasks.filter((t) => {
+        const matchesQuery =
+          !q ||
+          t.title.toLowerCase().includes(q) ||
+          t.description?.toLowerCase().includes(q);
+        const matchesPriority =
+          priorityFilter === 'ALL' || t.priority === priorityFilter;
+        return matchesQuery && matchesPriority;
+      }),
+    }));
+  }, [board?.columns, taskFilter, priorityFilter]);
 
   // Task Operations
   const handleOpenCreateTask = (columnId: string, columnTitle: string) => {
@@ -302,10 +332,10 @@ export default function BoardDetailPage() {
 
   if (isAuthLoading || (isLoading && !board)) {
     return (
-      <div className="flex-1 flex items-center justify-center py-24">
-        <div className="text-center space-y-3">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto" />
-          <p className="text-sm font-medium text-gray-500">Loading board...</p>
+      <div className="flex-1 flex items-center justify-center py-28">
+        <div className="flex flex-col items-center space-y-3">
+          <Loader2 className="w-6 h-6 animate-spin text-slate-700" />
+          <p className="text-xs font-medium text-slate-500">Loading board...</p>
         </div>
       </div>
     );
@@ -313,80 +343,101 @@ export default function BoardDetailPage() {
 
   if (error || !board) {
     return (
-      <div className="flex-1 max-w-xl mx-auto px-4 py-24 text-center space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto">
-          <AlertCircle className="w-6 h-6" />
+      <div className="flex-1 max-w-md mx-auto px-4 py-24 text-center space-y-3">
+        <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto">
+          <AlertCircle className="w-5 h-5" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900">Access Denied or Not Found</h2>
-        <p className="text-sm text-gray-500">{error || 'Board does not exist.'}</p>
+        <h2 className="text-base font-bold text-slate-900">Access Denied or Not Found</h2>
+        <p className="text-xs text-slate-500 leading-relaxed">
+          {error || 'This board does not exist or you do not have permission to access it.'}
+        </p>
         <Link
           href="/boards"
-          className="inline-flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700"
+          className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Boards</span>
         </Link>
       </div>
     );
   }
 
-  const roleLabel =
+  const roleTag =
     board.currentUserRole === 'OWNER'
-      ? 'Owner'
+      ? { label: 'Owner', style: 'bg-slate-100 text-slate-700 border-slate-200' }
       : board.currentUserRole === 'EDITOR'
-      ? 'Editor'
-      : 'Viewer (Read-only)';
-
-  const roleBadgeStyle =
-    board.currentUserRole === 'OWNER'
-      ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-      : board.currentUserRole === 'EDITOR'
-      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-      : 'bg-amber-50 text-amber-700 border-amber-200';
+      ? { label: 'Editor', style: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+      : { label: 'Viewer (Read-only)', style: 'bg-sky-50 text-sky-700 border-sky-200' };
 
   return (
-    <div className="flex-1 flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
-      {/* Top Bar */}
-      <div className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-3.5 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
-        <div className="flex items-center space-x-4 min-w-0">
+    <div className="flex-1 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden">
+      {/* Top Header Toolbar */}
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Left: Breadcrumb & Title */}
+        <div className="flex items-center space-x-3 min-w-0">
           <Link
             href="/boards"
-            className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition"
-            title="Back to All Boards"
+            className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded transition"
+            title="All Boards"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4" />
           </Link>
 
           <div className="min-w-0">
-            <div className="flex items-center space-x-2.5">
-              <h1 className="text-lg sm:text-xl font-bold text-gray-950 truncate">
+            <div className="flex items-center space-x-2">
+              <h1 className="text-sm sm:text-base font-bold text-slate-900 truncate tracking-tight">
                 {board.title}
               </h1>
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${roleBadgeStyle} shrink-0`}
+                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10.5px] font-semibold border ${roleTag.style} shrink-0`}
               >
                 <Shield className="w-3 h-3 mr-1" />
-                {roleLabel}
+                {roleTag.label}
               </span>
             </div>
             {board.description && (
-              <p className="text-xs text-gray-500 truncate max-w-xl">
+              <p className="text-[11px] text-slate-400 truncate max-w-lg">
                 {board.description}
               </p>
             )}
           </div>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center space-x-2 shrink-0 self-end sm:self-auto">
+        {/* Right: Search, Filters & Members Button */}
+        <div className="flex items-center space-x-2 shrink-0">
+          {/* Filter input */}
+          <div className="relative">
+            <Search className="w-3 h-3 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={taskFilter}
+              onChange={(e) => setTaskFilter(e.target.value)}
+              placeholder="Filter tasks..."
+              className="w-36 sm:w-44 pl-7 pr-2 py-1 text-xs rounded-md border border-slate-200 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900"
+            />
+          </div>
+
+          {/* Priority filter */}
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            className="text-xs border border-slate-200 rounded-md px-2 py-1 bg-white text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-900"
+          >
+            <option value="ALL">All Priorities</option>
+            <option value="URGENT">Urgent</option>
+            <option value="HIGH">High</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="LOW">Low</option>
+          </select>
+
           {/* Members / Share button */}
           <button
             onClick={() => setIsShareOpen(true)}
-            className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-700 shadow-2xs transition"
+            className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs transition"
           >
-            <Users className="w-4 h-4 text-gray-500" />
+            <Users className="w-3.5 h-3.5 text-slate-400" />
             <span>Members</span>
-            <span className="ml-1 px-1.5 py-0.2 rounded-full bg-gray-100 text-gray-700 text-[10px] font-bold">
+            <span className="ml-1 px-1 py-0.2 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold">
               {1 + (board.members?.length || 0)}
             </span>
           </button>
@@ -395,20 +446,20 @@ export default function BoardDetailPage() {
 
       {/* Read-Only Notice for Viewers */}
       {!canEdit && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs font-medium text-amber-800 flex items-center justify-center space-x-2">
-          <Info className="w-4 h-4 shrink-0" />
+        <div className="bg-sky-50/70 border-b border-sky-100 px-4 py-1.5 text-xs text-sky-800 flex items-center justify-center space-x-1.5">
+          <Lock className="w-3.5 h-3.5 shrink-0" />
           <span>
-            You have <strong>Viewer</strong> access to this board. You can view all tasks and columns in real-time, but modification and dragging are restricted.
+            You have <strong>Viewer</strong> access to this board. Cards and workflows are read-only.
           </span>
         </div>
       )}
 
       {/* Kanban Board Container */}
-      <div className="flex-1 p-4 sm:p-6 overflow-x-auto bg-gray-50/60">
+      <div className="flex-1 p-4 sm:p-5 overflow-x-auto bg-slate-50/60">
         {isMounted ? (
           <DragDropContext onDragEnd={handleDragEnd}>
-            <div className="inline-flex items-start space-x-4 h-full pb-4">
-              {board.columns?.map((column) => (
+            <div className="inline-flex items-start space-x-3.5 h-full pb-4">
+              {displayedColumns.map((column) => (
                 <ColumnContainer
                   key={column.id}
                   column={column}
@@ -425,25 +476,25 @@ export default function BoardDetailPage() {
 
               {/* Add Column Button / Form */}
               {canEdit && (
-                <div className="w-80 shrink-0">
+                <div className="w-[300px] shrink-0">
                   {isAddingColumn ? (
                     <form
                       onSubmit={handleAddColumn}
-                      className="bg-white rounded-2xl border border-indigo-200 p-4 shadow-sm space-y-3"
+                      className="bg-white rounded-xl border border-slate-300 p-3 shadow-2xs space-y-2.5"
                     >
                       <input
                         type="text"
                         autoFocus
                         value={newColumnTitle}
                         onChange={(e) => setNewColumnTitle(e.target.value)}
-                        placeholder="Enter column title..."
-                        className="w-full px-3 py-2 text-sm rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Column title..."
+                        className="w-full px-2.5 py-1.5 text-xs rounded-md border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900"
                       />
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1.5">
                         <button
                           type="submit"
                           disabled={isCreatingColumn || !newColumnTitle.trim()}
-                          className="px-3.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-2xs disabled:opacity-60 transition"
+                          className="px-3 py-1 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-md shadow-2xs disabled:opacity-50 transition"
                         >
                           {isCreatingColumn ? 'Adding...' : 'Add Column'}
                         </button>
@@ -453,18 +504,18 @@ export default function BoardDetailPage() {
                             setIsAddingColumn(false);
                             setNewColumnTitle('');
                           }}
-                          className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+                          className="p-1 text-slate-400 hover:text-slate-600 rounded"
                         >
-                          <X className="w-4 h-4" />
+                          <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </form>
                   ) : (
                     <button
                       onClick={() => setIsAddingColumn(true)}
-                      className="w-full py-3.5 px-4 rounded-2xl border-2 border-dashed border-gray-300 hover:border-indigo-400 hover:bg-indigo-50/30 text-sm font-semibold text-gray-500 hover:text-indigo-600 transition flex items-center justify-center space-x-2"
+                      className="w-full py-2.5 px-3 rounded-xl border border-dashed border-slate-300 hover:border-slate-400 hover:bg-white text-xs font-semibold text-slate-500 hover:text-slate-800 transition flex items-center justify-center space-x-1.5"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className="w-3.5 h-3.5" />
                       <span>Add Column</span>
                     </button>
                   )}
@@ -474,7 +525,7 @@ export default function BoardDetailPage() {
           </DragDropContext>
         ) : (
           <div className="flex items-center justify-center h-full">
-            <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+            <Loader2 className="w-5 h-5 animate-spin text-slate-600" />
           </div>
         )}
       </div>
@@ -501,19 +552,19 @@ export default function BoardDetailPage() {
 
       {/* Delete Column Confirmation Modal */}
       {columnToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-gray-100 space-y-4">
-            <h3 className="text-lg font-bold text-gray-900">Delete Column</h3>
-            <p className="text-sm text-gray-500">
-              Are you sure you want to delete the column &ldquo;
-              <strong className="text-gray-900">{columnToDelete.title}</strong>&rdquo;?
-              All tasks inside this column will be permanently deleted.
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl border border-slate-100 space-y-3">
+            <h3 className="text-sm font-bold text-slate-900">Delete Column</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Are you sure you want to delete &ldquo;
+              <strong className="text-slate-800">{columnToDelete.title}</strong>&rdquo;?
+              All tasks in this column will be permanently removed.
             </p>
-            <div className="flex items-center justify-end space-x-3 pt-3">
+            <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => setColumnToDelete(null)}
-                className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition"
+                className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
               >
                 Cancel
               </button>
@@ -521,11 +572,11 @@ export default function BoardDetailPage() {
                 type="button"
                 onClick={handleDeleteColumn}
                 disabled={isDeletingColumn}
-                className="inline-flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-xs disabled:opacity-60 transition"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-lg shadow-xs disabled:opacity-50 transition"
               >
                 {isDeletingColumn ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-3 h-3 animate-spin" />
                     <span>Deleting...</span>
                   </>
                 ) : (

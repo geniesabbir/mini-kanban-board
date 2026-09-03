@@ -5,11 +5,10 @@ import { Draggable } from '@hello-pangea/dnd';
 import { Task, Priority } from '../../types';
 import {
   Calendar,
-  MoreVertical,
   Edit2,
   Trash2,
   GripVertical,
-  AlertCircle,
+  Clock,
 } from 'lucide-react';
 import { format, isPast, isToday } from 'date-fns';
 
@@ -21,26 +20,29 @@ interface TaskCardProps {
   onDelete: (taskId: string) => void;
 }
 
-const PRIORITY_STYLES: Record<Priority, { label: string; badge: string; dot: string }> = {
+const PRIORITY_CONFIG: Record<
+  Priority,
+  { label: string; badgeClass: string; dotClass: string }
+> = {
   LOW: {
     label: 'Low',
-    badge: 'bg-blue-50 text-blue-700 border-blue-200/80',
-    dot: 'bg-blue-500',
+    badgeClass: 'bg-slate-50 text-slate-600 border-slate-200/80',
+    dotClass: 'bg-slate-400',
   },
   MEDIUM: {
     label: 'Medium',
-    badge: 'bg-amber-50 text-amber-700 border-amber-200/80',
-    dot: 'bg-amber-500',
+    badgeClass: 'bg-sky-50 text-sky-700 border-sky-200/60',
+    dotClass: 'bg-sky-500',
   },
   HIGH: {
     label: 'High',
-    badge: 'bg-orange-50 text-orange-700 border-orange-200/80',
-    dot: 'bg-orange-500',
+    badgeClass: 'bg-amber-50 text-amber-700 border-amber-200/60',
+    dotClass: 'bg-amber-500',
   },
   URGENT: {
     label: 'Urgent',
-    badge: 'bg-red-50 text-red-700 border-red-200/80',
-    dot: 'bg-red-500',
+    badgeClass: 'bg-rose-50 text-rose-700 border-rose-200/60',
+    dotClass: 'bg-rose-500',
   },
 };
 
@@ -51,7 +53,7 @@ export function TaskCard({
   onEdit,
   onDelete,
 }: TaskCardProps) {
-  const priorityInfo = PRIORITY_STYLES[task.priority] || PRIORITY_STYLES.MEDIUM;
+  const priority = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.MEDIUM;
 
   const formatDueDate = (dateString?: string | null) => {
     if (!dateString) return null;
@@ -67,48 +69,42 @@ export function TaskCard({
   const due = formatDueDate(task.dueDate);
 
   return (
-    <Draggable
-      draggableId={task.id}
-      index={index}
-      isDragDisabled={!canEdit}
-    >
+    <Draggable draggableId={task.id} index={index} isDragDisabled={!canEdit}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          className={`group relative bg-white rounded-xl border p-4 transition-all select-none ${
+          className={`group relative bg-white rounded-lg border p-3 transition-shadow select-none ${
             snapshot.isDragging
-              ? 'shadow-xl border-indigo-400 ring-2 ring-indigo-500/20 rotate-1 scale-[1.02] z-50'
-              : 'shadow-2xs border-gray-200/90 hover:border-gray-300 hover:shadow-sm'
-          } ${!canEdit ? 'cursor-default' : ''}`}
+              ? 'shadow-lg border-slate-400/90 ring-1 ring-slate-900/10 rotate-[0.5deg] scale-[1.01] z-50'
+              : 'shadow-2xs border-slate-200/80 hover:border-slate-300 hover:shadow-xs'
+          }`}
         >
-          {/* Header row: Priority Badge & Actions */}
-          <div className="flex items-center justify-between mb-2">
+          {/* Top row: Priority & Quick Actions */}
+          <div className="flex items-center justify-between mb-1.5">
             <span
-              className={`inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold border ${priorityInfo.badge}`}
+              className={`inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10.5px] font-medium border ${priority.badgeClass}`}
             >
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${priorityInfo.dot}`}
-              />
-              <span>{priorityInfo.label}</span>
+              <span className={`w-1.5 h-1.5 rounded-full ${priority.dotClass}`} />
+              <span>{priority.label}</span>
             </span>
 
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-0.5">
               {canEdit && (
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center space-x-0.5">
                   <button
                     onClick={() => onEdit(task)}
-                    title="Edit Task"
-                    className="p-1 text-gray-400 hover:text-indigo-600 hover:bg-gray-100 rounded-md transition"
+                    title="Edit task"
+                    className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded transition"
                   >
-                    <Edit2 className="w-3.5 h-3.5" />
+                    <Edit2 className="w-3 h-3" />
                   </button>
                   <button
                     onClick={() => onDelete(task.id)}
-                    title="Delete Task"
-                    className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition"
+                    title="Delete task"
+                    className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-3 h-3" />
                   </button>
                 </div>
               )}
@@ -116,39 +112,39 @@ export function TaskCard({
               {canEdit && (
                 <div
                   {...provided.dragHandleProps}
-                  className="p-1 text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing rounded"
-                  title="Drag to reorder"
+                  className="p-1 text-slate-300 hover:text-slate-600 cursor-grab active:cursor-grabbing rounded"
+                  title="Drag to rearrange"
                 >
-                  <GripVertical className="w-3.5 h-3.5" />
+                  <GripVertical className="w-3 h-3" />
                 </div>
               )}
             </div>
           </div>
 
           {/* Title */}
-          <h4 className="text-sm font-medium text-gray-900 leading-snug break-words">
+          <h4 className="text-[13px] font-medium text-slate-800 leading-snug break-words">
             {task.title}
           </h4>
 
-          {/* Description snippet if exists */}
+          {/* Description snippet */}
           {task.description && (
-            <p className="mt-1.5 text-xs text-gray-500 line-clamp-2 leading-relaxed">
+            <p className="mt-1 text-[11.5px] text-slate-400 line-clamp-2 leading-relaxed">
               {task.description}
             </p>
           )}
 
-          {/* Footer details: Due date */}
+          {/* Due date footer */}
           {due && (
-            <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between">
+            <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center">
               <span
-                className={`inline-flex items-center space-x-1 text-[11px] font-medium ${
-                  due.isOverdue ? 'text-red-600' : 'text-gray-500'
+                className={`inline-flex items-center space-x-1 text-[10.5px] font-medium ${
+                  due.isOverdue ? 'text-rose-600' : 'text-slate-400'
                 }`}
               >
                 <Calendar className="w-3 h-3" />
                 <span>{due.formatted}</span>
                 {due.isOverdue && (
-                  <span className="text-[10px] font-semibold text-red-600">(Overdue)</span>
+                  <span className="text-[10px] font-semibold text-rose-500 ml-0.5">(Overdue)</span>
                 )}
               </span>
             </div>

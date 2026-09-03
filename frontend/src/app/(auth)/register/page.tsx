@@ -39,30 +39,32 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-3xl shadow-sm border border-gray-200/80">
-        <div className="text-center">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto shadow-sm">
-            <Kanban className="w-7 h-7" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-50/70 py-12 px-4 sm:px-6">
+      <div className="max-w-sm w-full space-y-6 bg-white p-8 rounded-2xl shadow-2xs border border-slate-200/80">
+        <div className="text-center space-y-2">
+          <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center mx-auto shadow-xs">
+            <Kanban className="w-5 h-5 text-slate-100" />
           </div>
-          <h2 className="mt-4 text-2xl font-bold text-gray-900 tracking-tight">
-            Create an account
-          </h2>
-          <p className="mt-1.5 text-sm text-gray-500">
-            Start organizing your tasks and boards today
-          </p>
+          <div>
+            <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+              Create an Account
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Start collaborating on team Kanban boards
+            </p>
+          </div>
         </div>
 
         {error && (
-          <div className="flex items-center space-x-2 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
-            <AlertCircle className="w-5 h-5 shrink-0" />
+          <div className="flex items-center space-x-2 p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
               Full Name
             </label>
             <input
@@ -70,27 +72,27 @@ export default function RegisterPage() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Sarah Connor"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition"
+              placeholder="Alex Morgan"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 text-xs bg-white"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-              Email Address
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Work Email
             </label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="sarah@example.com"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition"
+              placeholder="alex@company.com"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 text-xs bg-white"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
               Password
             </label>
             <input
@@ -100,35 +102,35 @@ export default function RegisterPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 6 characters"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 text-xs bg-white"
             />
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60 transition flex items-center justify-center space-x-2 shadow-xs"
+            className="w-full py-2 px-3 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-50 transition flex items-center justify-center space-x-1.5 shadow-xs"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 <span>Creating account...</span>
               </>
             ) : (
               <>
                 <span>Sign Up</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>
         </form>
 
-        <div className="text-center pt-2">
-          <p className="text-sm text-gray-500">
+        <div className="text-center pt-1">
+          <p className="text-xs text-slate-500">
             Already have an account?{' '}
             <Link
               href="/login"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
+              className="font-semibold text-slate-900 hover:underline"
             >
               Sign in
             </Link>

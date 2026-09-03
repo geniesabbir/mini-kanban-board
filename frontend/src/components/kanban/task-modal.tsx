@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Task, Priority } from '../../types';
-import { X, Loader2, Calendar, AlertCircle } from 'lucide-react';
+import { X, Loader2, Calendar, AlertCircle, Flag } from 'lucide-react';
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -17,11 +17,31 @@ interface TaskModalProps {
   columnTitle?: string;
 }
 
-const PRIORITIES: { value: Priority; label: string; color: string }[] = [
-  { value: 'LOW', label: 'Low', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-  { value: 'MEDIUM', label: 'Medium', color: 'bg-amber-50 text-amber-700 border-amber-200' },
-  { value: 'HIGH', label: 'High', color: 'bg-orange-50 text-orange-700 border-orange-200' },
-  { value: 'URGENT', label: 'Urgent', color: 'bg-red-50 text-red-700 border-red-200' },
+const PRIORITIES: { value: Priority; label: string; dot: string; activeClass: string }[] = [
+  {
+    value: 'LOW',
+    label: 'Low',
+    dot: 'bg-slate-400',
+    activeClass: 'bg-slate-100 text-slate-700 border-slate-300 ring-1 ring-slate-400/20',
+  },
+  {
+    value: 'MEDIUM',
+    label: 'Medium',
+    dot: 'bg-sky-500',
+    activeClass: 'bg-sky-50 text-sky-700 border-sky-300 ring-1 ring-sky-400/20',
+  },
+  {
+    value: 'HIGH',
+    label: 'High',
+    dot: 'bg-amber-500',
+    activeClass: 'bg-amber-50 text-amber-700 border-amber-300 ring-1 ring-amber-400/20',
+  },
+  {
+    value: 'URGENT',
+    label: 'Urgent',
+    dot: 'bg-rose-500',
+    activeClass: 'bg-rose-50 text-rose-700 border-rose-300 ring-1 ring-rose-400/20',
+  },
 ];
 
 export function TaskModal({
@@ -82,29 +102,29 @@ export function TaskModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-xl border border-gray-100 space-y-6 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs">
+      <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-100 space-y-5 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">
-              {initialTask ? 'Edit Task' : 'Create New Task'}
+            <h2 className="text-base font-bold text-slate-900">
+              {initialTask ? 'Edit Task' : 'New Task'}
             </h2>
             {columnTitle && (
-              <p className="text-xs text-gray-500 mt-0.5">
-                Column: <span className="font-semibold text-gray-700">{columnTitle}</span>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Column: <span className="font-semibold text-slate-700">{columnTitle}</span>
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition"
+            className="p-1 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-100 transition"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center space-x-2">
+          <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -112,8 +132,8 @@ export function TaskModal({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-              Task Title *
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Title *
             </label>
             <input
               type="text"
@@ -122,26 +142,26 @@ export function TaskModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Implement authentication middleware"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 text-xs"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-              Description
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Description <span className="font-normal text-slate-400">(optional)</span>
             </label>
             <textarea
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Add more details, acceptance criteria, or links..."
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm resize-none"
+              placeholder="Context, requirements, acceptance criteria..."
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 text-xs resize-none"
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Priority
               </label>
               <div className="grid grid-cols-2 gap-1.5">
@@ -150,49 +170,48 @@ export function TaskModal({
                     key={p.value}
                     type="button"
                     onClick={() => setPriority(p.value)}
-                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition text-center ${
+                    className={`px-2 py-1.5 rounded-md text-xs font-medium border transition flex items-center justify-center space-x-1.5 ${
                       priority === p.value
-                        ? `${p.color} ring-2 ring-indigo-500/20 shadow-xs`
-                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                        ? p.activeClass
+                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                     }`}
                   >
-                    {p.label}
+                    <span className={`w-1.5 h-1.5 rounded-full ${p.dot}`} />
+                    <span>{p.label}</span>
                   </button>
                 ))}
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Due Date
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-                />
-              </div>
+              <input
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 text-xs bg-white"
+              />
             </div>
           </div>
 
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition"
+              className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !title.trim()}
-              className="inline-flex items-center space-x-2 px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs disabled:opacity-60 transition"
+              className="inline-flex items-center space-x-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs disabled:opacity-50 transition"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-3 h-3 animate-spin" />
                   <span>Saving...</span>
                 </>
               ) : (

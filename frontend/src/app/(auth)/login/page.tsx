@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../../lib/auth-context';
-import { Kanban, ArrowRight, AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { Kanban, ArrowRight, AlertCircle, Loader2, KeyRound } from 'lucide-react';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -37,44 +37,46 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-3xl shadow-sm border border-gray-200/80">
-        <div className="text-center">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto shadow-sm">
-            <Kanban className="w-7 h-7" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-50/70 py-12 px-4 sm:px-6">
+      <div className="max-w-sm w-full space-y-6 bg-white p-8 rounded-2xl shadow-2xs border border-slate-200/80">
+        <div className="text-center space-y-2">
+          <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center mx-auto shadow-xs">
+            <Kanban className="w-5 h-5 text-slate-100" />
           </div>
-          <h2 className="mt-4 text-2xl font-bold text-gray-900 tracking-tight">
-            Welcome back
-          </h2>
-          <p className="mt-1.5 text-sm text-gray-500">
-            Sign in to access your boards and collaborate
-          </p>
+          <div>
+            <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+              Sign in to KanbanFlow
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Enter your credentials to access your workspaces
+            </p>
+          </div>
         </div>
 
         {error && (
-          <div className="flex items-center space-x-2 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
-            <AlertCircle className="w-5 h-5 shrink-0" />
+          <div className="flex items-center space-x-2 p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-              Email Address
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Email
             </label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition"
+              placeholder="name@example.com"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 text-xs bg-white"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
               Password
             </label>
             <input
@@ -83,68 +85,71 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 text-xs bg-white"
             />
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60 transition flex items-center justify-center space-x-2 shadow-xs"
+            className="w-full py-2 px-3 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-50 transition flex items-center justify-center space-x-1.5 shadow-xs"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 <span>Signing in...</span>
               </>
             ) : (
               <>
-                <span>Sign In</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>
         </form>
 
-        {/* Demo Fast-Fill section */}
-        <div className="pt-4 border-t border-gray-100">
-          <div className="flex items-center space-x-1.5 text-xs font-medium text-gray-500 mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-            <span>Quick Demo Accounts (Assessment Testing)</span>
+        {/* Demo Fast Fill Section */}
+        <div className="pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium mb-2">
+            <span className="flex items-center space-x-1">
+              <KeyRound className="w-3 h-3 text-slate-400" />
+              <span>Assessment Demo Accounts</span>
+            </span>
           </div>
-          <div className="grid grid-cols-3 gap-2">
+
+          <div className="grid grid-cols-3 gap-1.5">
             <button
               type="button"
               onClick={() => handleQuickLogin('alice@example.com')}
-              className="px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200 text-xs font-medium text-gray-700 hover:text-indigo-700 transition text-center"
+              className="px-2 py-1.5 rounded-md border border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-[11px] font-medium text-slate-700 transition text-center"
             >
-              Alice (Owner)
+              Alice <span className="text-[10px] text-slate-400 block font-normal">Owner</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('bob@example.com')}
-              className="px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200 text-xs font-medium text-gray-700 hover:text-indigo-700 transition text-center"
+              className="px-2 py-1.5 rounded-md border border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-[11px] font-medium text-slate-700 transition text-center"
             >
-              Bob (Editor)
+              Bob <span className="text-[10px] text-slate-400 block font-normal">Editor</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickLogin('charlie@example.com')}
-              className="px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200 text-xs font-medium text-gray-700 hover:text-indigo-700 transition text-center"
+              className="px-2 py-1.5 rounded-md border border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-[11px] font-medium text-slate-700 transition text-center"
             >
-              Charlie (Viewer)
+              Charlie <span className="text-[10px] text-slate-400 block font-normal">Viewer</span>
             </button>
           </div>
         </div>
 
-        <div className="text-center pt-2">
-          <p className="text-sm text-gray-500">
+        <div className="text-center pt-1">
+          <p className="text-xs text-slate-500">
             Don&apos;t have an account?{' '}
             <Link
               href="/register"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
+              className="font-semibold text-slate-900 hover:underline"
             >
-              Create an account
+              Sign up
             </Link>
           </p>
         </div>

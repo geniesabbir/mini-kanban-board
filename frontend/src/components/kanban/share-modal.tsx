@@ -55,7 +55,7 @@ export function ShareModal({
         email: email.trim(),
         role,
       });
-      setInviteSuccess(`Invited ${email.trim()} successfully!`);
+      setInviteSuccess(`Invited ${email.trim()} successfully.`);
       setEmail('');
       onMembersUpdated();
     } catch (err: any) {
@@ -91,110 +91,104 @@ export function ShareModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-xl border border-gray-100 space-y-6 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs">
+      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-5 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <Users className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Board Members</h2>
-              <p className="text-xs text-gray-500">
-                Manage who has access to this Kanban board
-              </p>
-            </div>
+          <div>
+            <h2 className="text-base font-bold text-slate-900">Board Collaborators</h2>
+            <p className="text-xs text-slate-500">Manage member permissions for this board</p>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition"
+            className="p-1 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-100 transition"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Invite Form (only for board owner) */}
+        {/* Invite Form (Owner only) */}
         {isOwner ? (
-          <form onSubmit={handleInvite} className="space-y-3 bg-gray-50/70 p-4 rounded-2xl border border-gray-200">
-            <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">
-              Invite Collaborator
+          <form
+            onSubmit={handleInvite}
+            className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5"
+          >
+            <h3 className="text-[11px] font-semibold text-slate-700 uppercase tracking-wider">
+              Invite by Email
             </h3>
 
             {inviteError && (
-              <div className="p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
+              <div className="p-2 rounded-md bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-1.5">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                 <span>{inviteError}</span>
               </div>
             )}
 
             {inviteSuccess && (
-              <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center space-x-2">
-                <Check className="w-4 h-4 shrink-0" />
+              <div className="p-2 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center space-x-1.5">
+                <Check className="w-3.5 h-3.5 shrink-0" />
                 <span>{inviteSuccess}</span>
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex gap-2">
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="colleague@example.com"
-                className="flex-1 px-3.5 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white"
+                placeholder="registered-user@example.com"
+                className="flex-1 px-2.5 py-1.5 rounded-md border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 text-xs bg-white"
               />
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value as Role)}
-                className="px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-semibold bg-white"
+                className="px-2 py-1.5 rounded-md border border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-900 text-xs bg-white font-medium text-slate-700"
               >
-                <option value="EDITOR">Editor (Can edit)</option>
-                <option value="VIEWER">Viewer (Read only)</option>
+                <option value="EDITOR">Editor</option>
+                <option value="VIEWER">Viewer</option>
               </select>
               <button
                 type="submit"
                 disabled={isInviting || !email.trim()}
-                className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-xs disabled:opacity-60 transition"
+                className="inline-flex items-center space-x-1 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-md shadow-xs disabled:opacity-50 transition"
               >
                 {isInviting ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <Loader2 className="w-3 h-3 animate-spin" />
                 ) : (
-                  <>
-                    <UserPlus className="w-3.5 h-3.5" />
-                    <span>Invite</span>
-                  </>
+                  <span>Invite</span>
                 )}
               </button>
             </div>
           </form>
         ) : (
-          <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-800 text-xs flex items-center space-x-2">
-            <Shield className="w-4 h-4 shrink-0" />
-            <span>Only the board owner can invite or remove collaborators.</span>
+          <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-slate-600 text-xs flex items-center space-x-2">
+            <Shield className="w-4 h-4 text-slate-400 shrink-0" />
+            <span>Only the board owner can invite or change collaborator roles.</span>
           </div>
         )}
 
-        {/* Member List */}
-        <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
-          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-            Current Members ({1 + members.length})
-          </h4>
+        {/* Members List */}
+        <div className="space-y-1.5 max-h-60 overflow-y-auto pr-0.5">
+          <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
+            <span>Members</span>
+            <span>{1 + members.length} total</span>
+          </div>
 
           {/* Owner row */}
           {owner && (
-            <div className="flex items-center justify-between p-3 rounded-xl bg-indigo-50/40 border border-indigo-100">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">
+            <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200/60">
+              <div className="flex items-center space-x-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-semibold shrink-0">
                   {owner.name.slice(0, 2).toUpperCase()}
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900 leading-tight">
+                <div className="truncate">
+                  <p className="text-xs font-semibold text-slate-900 leading-tight truncate">
                     {owner.name}
                   </p>
-                  <p className="text-xs text-gray-500">{owner.email}</p>
+                  <p className="text-[11px] text-slate-400 truncate">{owner.email}</p>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800">
+              <span className="px-2 py-0.5 rounded text-[10.5px] font-semibold bg-slate-200 text-slate-800 shrink-0">
                 Owner
               </span>
             </div>
@@ -204,21 +198,23 @@ export function ShareModal({
           {members.map((member) => (
             <div
               key={member.id}
-              className="flex items-center justify-between p-3 rounded-xl bg-white border border-gray-200 hover:border-gray-300 transition"
+              className="flex items-center justify-between p-2.5 rounded-lg bg-white border border-slate-200 hover:border-slate-300 transition"
             >
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center text-xs font-bold">
+              <div className="flex items-center space-x-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-semibold shrink-0">
                   {member.user.name.slice(0, 2).toUpperCase()}
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900 leading-tight">
+                <div className="truncate">
+                  <p className="text-xs font-semibold text-slate-900 leading-tight truncate">
                     {member.user.name}
                   </p>
-                  <p className="text-xs text-gray-500">{member.user.email}</p>
+                  <p className="text-[11px] text-slate-400 truncate">
+                    {member.user.email}
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5 shrink-0">
                 {isOwner ? (
                   <>
                     <select
@@ -226,7 +222,7 @@ export function ShareModal({
                       onChange={(e) =>
                         handleRoleChange(member.id, e.target.value as Role)
                       }
-                      className="text-xs font-medium border border-gray-200 rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      className="text-xs font-medium border border-slate-200 rounded px-1.5 py-0.5 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900"
                     >
                       <option value="EDITOR">Editor</option>
                       <option value="VIEWER">Viewer</option>
@@ -235,22 +231,22 @@ export function ShareModal({
                     <button
                       onClick={() => handleRemoveMember(member.id)}
                       disabled={removingId === member.id}
-                      title="Remove Collaborator"
-                      className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                      title="Remove Member"
+                      className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition"
                     >
                       {removingId === member.id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-3 h-3 animate-spin" />
                       ) : (
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3 h-3" />
                       )}
                     </button>
                   </>
                 ) : (
                   <span
-                    className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                    className={`px-2 py-0.5 rounded text-[10.5px] font-semibold ${
                       member.role === 'EDITOR'
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-amber-100 text-amber-800'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        : 'bg-sky-50 text-sky-700 border border-sky-200'
                     }`}
                   >
                     {member.role === 'EDITOR' ? 'Editor' : 'Viewer'}
@@ -261,13 +257,13 @@ export function ShareModal({
           ))}
         </div>
 
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-end pt-2 border-t border-slate-100">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition"
+            className="px-3.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
           >
-            Close
+            Done
           </button>
         </div>
       </div>
